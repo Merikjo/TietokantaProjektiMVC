@@ -1,0 +1,104 @@
+﻿@model IEnumerable<TietokantaProjekti2MVC.Models.SimplyTunnitData>
+
+@{
+    ViewBag.Title = "HenkiloCreate";
+}
+
+@section scripts {
+
+    <script src="~/Scripts/Application/Logic.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            initHenkiloTunti();
+        })
+
+
+    </script>
+}
+
+    <div class="jumbotron">
+        <h2>PROJEKTIEN LISTAUKSET</h2>
+
+<pre>
+   @ViewBag.ErrorMessage
+</pre>
+
+        <p>
+            <input id="ProjektiTunnit" type="text" placeholder="projekti tunnit" />
+        </p>
+        <p>
+            <input id="ProjektiID" type="text" placeholder="projektiid" />
+        </p>
+        <p>
+            <input id="HenkiloID" type="text" placeholder="henkiloid" />
+        </p>
+
+        <button id="projektiButton" class="btn"> Tallenna projektitiedot</button>
+
+        <hr />
+        <h2>Located Assets List</h2>
+
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TuntiID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HenkiloID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pvm)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiTunnit)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiNimi)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Henkilonimi)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TuntiID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HenkiloID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pvm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiTunnit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiNimi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Henkilonimi)
+                </td>
+                <td>
+                    @Html.ActionLink("Muokkaa", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Poista", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+
+
+    }
+
+        </table>
+    </div>

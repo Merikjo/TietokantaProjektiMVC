@@ -1,0 +1,107 @@
+﻿@model TietokantaProjekti2MVC.Models.SimplyTunnitData
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="jumbotron">
+    <h2>Details</h2>
+
+    <div>
+        <h4>Tunnit</h4>
+        <hr />
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.HenkiloID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.HenkiloID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProjektiID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProjektiID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pvm)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pvm)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProjektiTunnit)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProjektiTunnit)
+            </dd>
+
+            @*<dt>
+                    @Html.DisplayNameFor(model => model.SuunnitellutTunnit)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SuunnitellutTunnit)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ToteutuneetTunnit)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ToteutuneetTunnit)
+                </dd>*@
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProjektiTunti)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProjektiTunti)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Etunimi)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Etunimi)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Sukunimi)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Sukunimi)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Henkilonimi)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Henkilonimi)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProjektiNimi)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProjektiNimi)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.TuntiID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</div>

@@ -1,0 +1,80 @@
+﻿@model TietokantaProjekti2MVC.Models.SimplyTunnitData
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Tunnit</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Pvm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pvm)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.ProjektiTunnit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjektiTunnit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SuunnitellutTunnit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SuunnitellutTunnit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ToteutuneetTunnit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ToteutuneetTunnit)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjektiTunti)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjektiTunti)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Henkilot.Etunimi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Henkilot.Etunimi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Projektit.ProjektiNimi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Projektit.ProjektiNimi)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

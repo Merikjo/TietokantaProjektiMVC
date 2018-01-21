@@ -1,6 +1,93 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-image: url('../Images/koysi.jpg');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.jumbotron {
+    /*text-align: center;*/
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    opacity: 0.7;
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    font-size: 12px !important;
+    /*font-weight: 200;*/
+    line-height: 2.1428571435;
+    color: inherit;
+    background-color: #eeeeee;
+}
+
+    .jumbotron h1 {
+        line-height: 1;
+        color: inherit;
+    }
+
+    .jumbotron p {
+        line-height: 1.4;
+    }
+
+.container .jumbotron {
+    border-radius: 6px;
+}
+
+@media screen and (min-width: 768px) {
+    .jumbotron {
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
+
+    .container .jumbotron {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+
+    .jumbotron h1 {
+        font-size: 14px;
+    }
+    /* Set padding to keep content from hitting the edges */
+    .body-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+button {
+    font-family: Arial;
+    background-color: #eee;
+    border: 1px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}body {
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 /* Set padding to keep content from hitting the edges */

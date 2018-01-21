@@ -1,0 +1,296 @@
+﻿
+@{
+    ViewBag.Title = "Index2";
+}
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        function päivitäHenkilölista() {
+
+            //ajetaan kontrollerista tuntilistauksen tiedot, jotka tulevat 'json' muodossa merkkijonona
+            $.getJSON("/henkilo/getlist", null, function (json) {
+                var henkilot = JSON.parse(json); //muunnetaan merkkijonot objekteiksi
+
+                //alert
+                alert("Henkilöiden lkm: " + henkilot.length);
+
+                //html muuttujan generointi:
+                var html = "";
+
+                //käydään läpi sulmukassa:
+                for (var index = 0; index < henkilot.length; index++) {
+                    html += "<tr>" +
+                                //tyhjä html-linkki
+                        "<td><a href='#'><span class='glyphicon glyphicon-pencil'></span></a></td>" +
+                                "<td>" + henkilot[index].HenkiloID + "</td>" +    //[]=taulukkomääritys
+                                "<td>" + henkilot[index].Etunimi + "</td>" +
+                                "<td>" + henkilot[index].Sukunimi + "</td>" +
+                                "<td>" + henkilot[index].Osoite + "</td>" +
+                                "<td>" + henkilot[index].Esimies + "</td>" +
+                                "<td><a href='#'><span class='glyphicon glyphicon-trash'></span></a></td>" +
+                                "<td><a href='#'><span class='glyphicon glyphicon-plus'></span></a></td>" +
+                                "</tr>\r\n";
+                }
+
+                //näytetään tulokset ruudulla:
+                $("#henkiloList tbody").html(html);
+
+                // tietojen muokkaus kun klikataan kynän kuvaa
+                $(".glyphicon-pencil").click(function () {
+
+                    // etsitään henkilön tiedot klikatulta riviltä, 
+                    //.parent() = palataan kaksi riviä puussa ylöspäin äitielementillä dom -elementissä, eli <a href> ja <td> for -silmukassa
+                    //.next() hypätään seuraavaan elementtiin eli Henkilo_id riville ja luetaan sen .text() sisältö
+                    var henkiloId = $(this).parent().parent().next().text();
+
+                    //alert(henkiloId);
+
+                    // Haetaan henkilön tiedot id:n perusteella, eli lähetetään json pyyntö kontrollerille
+                    $.getJSON("/henkilo/getsinglehenkilo/" + henkiloId, null, function (json2) { //getsinglehenkilo = action metodi, henkiloId = id parametri, annetaan parametriksi, jota käyttäjä klikkasi, ks rivi 46.
+                        var henkilot = JSON.parse(json2); //joka vastaa yksittäiseen henkilön tiedoilla
+
+                        // kopioidaan tiedot ikkunaan
+                        $("#henkilotModal_HenkiloID").val(henkilot.HenkiloID);
+                        $("#henkilotModal_Etunimi").val(henkilot.Etunimi);
+                        $("#henkilotModal_Sukunimi").val(henkilot.Sukunimi);
+                        $("#henkilotModal_Osoite").val(henkilot.Osoite);
+                        $("#henkilotModal_Esimies").val(henkilot.Esimies);
+
+                        // Näytetään ikkuna
+                        $("#henkilotModalTitle").text("Muokkaa henkilöä");
+                          // Näytetään ikkuna henkilotModalDialog
+                        $("#henkilotModalDialog").modal("show");
+                    });
+                });
+
+                // tietojen muokkaus kun klikataan plus kuvaketta
+                $(".glyphicon-plus").click(function () {
+
+                    // etsitään henkilön tiedot klikatulta riviltä, 
+                    //.parent() = palataan kaksi riviä puussa ylöspäin äitielementillä dom -elementissä, eli <a href> ja <td> for -silmukassa
+                    //.next() hypätään seuraavaan elementtiin eli Henkilo_id riville ja luetaan sen .text() sisältö
+                    var henkiloId = $(this).parent().parent().parent().next().text();
+
+                    //alert(henkiloId);
+
+                    // Haetaan henkilön tiedot id:n perusteella, eli lähetetään json pyyntö kontrollerille
+                    $.getJSON("/henkilo/getHenkiloTunnit/" + henkiloId, null, function (json2) { //getsinglehenkilo = action metodi, henkiloId = id parametri, annetaan parametriksi, jota käyttäjä klikkasi, ks rivi 46.
+                        var henkilot = JSON.parse(json2); //joka vastaa yksittäiseen henkilön tiedoilla
+
+                        // kopioidaan tiedot ikkunaan
+                        $("#henkilotModal_TuntiID").val(henkilot.TuntiID);
+                        $("#henkilotModal_HenkiloID").val(henkilot.HenkiloID);
+                        $("#henkilotModal_Pvm").val(henkilot.Pvm);
+                        $("#henkilotModal_ProjektiTunnit").val(henkilot.ProjektiTunnit);
+                  
+
+                        // Näytetään ikkuna
+                        $("#tunnitperprojektiModalTitle").text("Näytä projekti tunnit");
+                        // Näytetään ikkuna henkilotModalDialog
+                        $("#tunnitperprojektiModalDialog").modal("show");
+                    });
+                });
+
+                // Tietojen poistaminen
+                $(".glyphicon-trash").click(function () {
+                    // Haetaan henkilön tiedot klikatulta riviltä
+                    console.log("Poistoa klikattu");
+
+                    //.parent() = palataan kaksi riviä puussa ylöspäin äitielementillä dom -elementissä, eli <a href> ja <td> for -silmukassa
+                    //.prev() = palataan takaisin
+                    var henkiloId = $(this).parent().parent().prev().prev().prev().prev().prev().text(); //ks. http://api.jquery.com/prev/
+                    var ok = confirm("Haluatko varmasti poistaa henkilötiedot " + henkiloId + "?");
+
+                    if (ok == true) {
+                        $.getJSON("/henkilo/delete/" + henkiloId, null, function (status) { //henkiloId = parametri, status = olio
+                            if (status == true) {
+                                alert("Henkilötiedot on poistettu!");
+                                päivitäHenkilölista();
+                            }
+                            else {
+                                alert("Poistaminen ei onnistunut, tarkista tiedot!");
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        $(function () {
+            päivitäHenkilölista();
+
+            $("#lisaaUusiHenkiloButton").click(function () {
+
+                // Tyhjennetään ikkunan tiedot
+                $("#henkilotModal_HenkiloID").val("(Uusi ID)");
+                $("#henkilotModal_Etunimi").val("");
+                $("#henkilotModal_Sukunimi").val("");
+                $("#henkilotModal_Osoite").val("");
+                $("#henkilotModal_Esimies").val("");
+
+                $("#henkilotModalTitle").text("Lisää uusi henkilö");
+                $("#henkilotModalDialog").modal("show");
+            });
+
+            $("#henkilotModalSaveButton").click(function () {
+                // Luetaan käyttäjän syöttämät kentät:
+                var details = {
+                    HenkiloID: $("#henkilotModal_HenkiloID").val(),
+                    Etunimi: $("#henkilotModal_Etunimi").val(),
+                    Sukunimi: $("#henkilotModal_Sukunimi").val(),
+                    Osoite: $("#henkilotModal_Osoite").val(),
+                    Esimies: $("#henkilotModal_Esimies").val()
+                };
+
+                    $.post("/henkilo/update/", details, function (status) { //status = muuttuja
+                    if (status == true) {
+                        alert("Uudet tiedot tallennettu!");
+
+                        $("#henkilotModalDialog").modal("hide");
+                        päivitäHenkilölista();
+                    }
+                    else {
+                        alert("Tallennus ei onnistunut, tarkista uudelleen!");
+                    }
+                });
+            });
+
+            console.log("Alustus valmis!");
+        });
+
+        //Henkilötietojen alitiedosto: haetaan henkilön tunnit per projekti
+        $(function () {
+            $(".näytäTunnitPerProjektiNappi").click(function () {
+                //alert("Nappia painettu!");
+                var henkiloId = $(this).data("henkiloid");
+                //var p1 = $(this).parent();
+                //alert(henkiloId);
+
+                $("#tunnit_" + henkiloId).css("display", "table-row");
+
+                var url = "/henkilo/getTunnit/" + henkiloId;
+                //alert (url);
+                $.ajax(url).done(function (data) {
+                    //alert("Palvelimelta tuli vastaus.");
+
+                    var tunnitData = "";
+                    for (var i = 0; i < data.length; i++) {
+                        tunnitData += (i + 1) + ": " + data[i].TuntiID + " | " + data[i].ProjektiNimi + " | " +
+                            data[i].HenkiloID + " | " + data[i].Pvm + " | " + "Tunnit: " +
+                            data[i].ProjektiTunnit + "\r\n";
+                    }
+
+                    //alert(tunnitData);
+
+                    $("#tunnitText_" + henkiloId).html("<pre>" + tunnitData + "</pre>");
+                });
+            });
+        });
+    </script>
+
+}
+
+    <div class="jumbotron">
+        <h2>Henkilöt, dynaaminen muokkaus Ajaxilla</h2>
+        @*//uuden henkilötiedon lisääminen*@
+        <button class="w3-btn w3-large" id="lisaaUusiHenkiloButton">Lisää uusi henkilö</button>
+
+        <table class="table table-striped" id="henkiloList">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>HenkilöID</th>
+                    <th>Etunimi</th>
+                    <th>Sukunimi</th>
+                    <th>Osoite</th>
+                    <th>Esimies</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*//  sisällön määritys $("#customerList tbody").html(html);*@
+            </tbody>
+
+        </table>
+
+
+        @*//Modal Linkki: https://getbootstrap.com/docs/3.3/javascript/#modals*@
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="henkilotModalDialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><span id="henkilotModalTitle">Muokkaa henkilötietoa</span></h4>
+                    </div>
+
+                    <div class="modal-body">
+                        @*//Modaali-ikkunan sisältö->*@
+                        <div class="row">
+                            <div class="col-md-3">HenkilöID</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_HenkiloID" type="text" readonly></div> @*//Id:llä on readonly attribuutti, eli käyttäjä ei pääse muokkaamaan id:n arvoa*@
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Etunimi</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_Etunimi" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Sukunimi</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_Sukunimi" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Osoite</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_Osoite" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Esimies</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_Esimies" type="text"></div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Sulje</button>
+                        <button type="button" class="btn btn-primary" id="henkilotModalSaveButton">Tallenna</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claim hours to project per employee -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="tunnitperprojektiModalDialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><span id="tunnitperprojektiModalTitle">Muokkaa henkilötietoa</span></h4>
+                    </div>
+
+                    <div class="modal-body">
+                        @*//Modaali-ikkunan sisältö->*@
+                        <div class="row">
+                            <div class="col-md-3">HenkilöID</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_TuntiID" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Etunimi</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_HenkiloID" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Sukunimi</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_Pvm" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Osoite</div>
+                            <div class="col-md-6"><input class="form-control" id="henkilotModal_ProjektiTunnit" type="text"></div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Sulje</button>
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>

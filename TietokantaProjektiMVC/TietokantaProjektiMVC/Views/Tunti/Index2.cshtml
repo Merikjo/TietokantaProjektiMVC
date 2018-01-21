@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewBag.Title = "Index2";
+}
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        function päivitäTuntilista() {
+            //ajetaan kontrollerista tuntilistauksen tiedot, jotka tulevat 'json' muodossa merkkijonona
+            $.getJSON("/tunti/getlist", null, function (json) {
+                var tunnit = JSON.parse(json); //muunnetaan merkkijonot objekteiksi
+
+                //alert
+                alert("Tuntien lkm: " + tunnit.length);
+
+                //html muuttujan generointi:
+                var html = "";
+
+                //käydään läpi sulmukassa:
+                for (var index = 0; index < tunnit.length; index++) {
+                    html += "<tr>" +
+                        "<td><a href='#'><span class='glyphicon glyphicon-pencil'></span></a></td>" +
+                        "<td>" + tunnit[index].TuntiID + "</td>" + //[]=taulukkomääritys
+                        "<td>" + tunnit[index].ProjektiID + "</td>" +
+                        "<td>" + tunnit[index].HenkiloID + "</td>" +
+                        "<td>" + tunnit[index].Pvm + "</td>" +
+                        "<td>" + tunnit[index].ProjektiTunnit + "</td>" +
+                        "<td><a href='#'><span class='glyphicon glyphicon-trash'></span></a></td>" +
+                        "</tr>\r\n";//rivinvaihto
+                }
+
+                //näytetään tulokset ruudulla:
+                $("#tuntiList tbody").html(html);
+
+                // Tietojen muokkaus
+                $(".glyphicon-pencil").click(function () {
+
+                    // Haetaan tuntitiedot klikatulta riviltä
+                    var tuntiId = $(this).parent().parent().next().text();
+                    //alert(tuntiId);
+
+                    // haetaan tuntitiedot id:n perusteella, eli lähetetään json pyyntö kontrollerille
+                    $.getJSON("/tunti/getsingletunnit/" + tuntiId, null, function (json2) {  //getsingletunnit = action metodi, tuntiId = id parametri, annetaan parametriksi, jota käyttäjä klikkasi, ks rivi 46.
+                        var tunnit = JSON.parse(json2);  //joka vastaa yksittäiseen tuntirivin tiedoilla
+
+                        // Kopioidaan tiedot ikkunaan
+                        $("#tunnitModal_TuntiID").val(tunnit.TuntiID);
+                        $("#tunnitModal_ProjektiID").val(tunnit.ProjektiID);
+                        $("#tunnitModal_HenkiloID").val(tunnit.HenkiloID);
+                        $("#tunnitModal_Pvm").val(tunnit.Pvm);
+                        $("#tunnitModal_ProjektiTunnit").val(tunnit.ProjektiTunnit);
+
+                        // Näytetään ikkuna
+                        $("#tunnitModalTitle").text("Muokkaa projektitunteja");
+                        $("#tunnitModalDialog").modal("show");
+                    });
+                });
+
+                // Tietojen poistaminen
+                $(".glyphicon-trash").click(function () {
+                    // etsitään asiakkaan tiedot klikatulta riviltä
+                    console.log("Poistoa klikattu");
+
+                    //.parent() = palataan kaksi riviä puussa ylöspäin äitielementillä dom -elementissä, eli <a href> ja <td> for -silmukassa
+                    //.prev() = palataan takaisin
+                    var tuntiId = $(this).parent().parent().prev().prev().prev().prev().prev().text();
+                    var ok = confirm("Haluatko varmasti poistaa projektitunnit " + tuntiId + "?");
+
+                    if (ok == true) {
+                        $.getJSON("/tunti/delete/" + tuntiId, null, function (status) {
+                            if (status == true) {
+                                alert("Projektitunnit on poistettu!");
+                                päivitäTuntilista();
+                            }
+                            else {
+                                alert("Poistaminen ei onnistunut, tarkusta tiedot!");
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        $(function () {
+            päivitäTuntilista();
+
+            $("#lisaaUusiTunnitButton").click(function () {
+
+                // Tyhjennetään ikkunan tiedot
+                $("#tunnitModal_TuntiID").val("(Uusi)");
+                $("#tunnitModal_ProjektiID").val("");
+                $("#tunnitModal_HenkiloID").val("");
+                $("#tunnitModal_Pvm").val("");
+                $("#tunnitModal_ProjektiTunnit").val("");
+
+                // Näytetään ikkuna
+                $("#tunnitModalTitle").text("Lisää uudet projektitunnit");
+                $("#tunnitModalDialog").modal("show");
+            });
+
+            $("#tunnitModalSaveButton").click(function () {
+                // Luetaan käyttäjän syöttämät kentät
+                var details = {
+                    TuntiID: $("#tunnitModal_TuntiID").val(),
+                    ProjektiID: $("#tunnitModal_ProjektiID").val(),
+                    HenkiloID: $("#tunnitModal_HenkiloID").val(),
+                    Pvm: $("#tunnitModal_Pvm").val(),
+                    ProjektiTunnit: $("#tunnitModal_ProjektiTunnit").val()
+                };
+
+                $.post("/tunti/update/", details, function (status) {
+                    if (status == true) {
+                        alert("Uudet ProjektiTuntitiedot tallennettu!");
+                        $("#tunnitModalDialog").modal("hide");
+                        päivitäTuntilista();
+                    }
+                    else {
+                        alert("Tallennus ei onnistunut, tarkista tiedot!");
+                    }
+                });
+            });
+
+            console.log("Alustus valmis!");
+        });
+    </script>
+}
+
+
+    <div class="jumbotron">
+        <h2>Tunnit, dynaaminen muokkaus Ajaxilla</h2>
+
+        <button class="w3-btn w3-large" id="lisaaUusiTunnitButton">Lisää uusi projektitunti</button>
+
+        <table class="table table-striped" id="tuntiList">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>TuntiID</th>
+                    <th>ProjektiID</th>
+                    <th>HenkilöID</th>
+                    <th>Pvm</th>
+                    <th>ProjektiTunnit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*//  sisällön määritys  $("#tuntiList tbody").html(html);*@
+            </tbody>
+        </table>
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="tunnitModalDialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><span id="tunnitModalTitle">Muokkaa tuntitietoja</span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">TuntiID</div>
+                            <div class="col-md-6"><input class="form-control" id="tunnitModal_TuntiID" type="text" readonly></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">ProjektiID</div>
+                            <div class="col-md-6"><input class="form-control" id="tunnitModal_ProjektiID" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">HenkiloID</div>
+                            <div class="col-md-6"><input class="form-control" id="tunnitModal_HenkiloID" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Pvm</div>
+                            <div class="col-md-6"><input class="form-control" id="tunnitModal_Pvm" type="text"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">ProjektiTunnit</div>
+                            <div class="col-md-6"><input class="form-control" id="tunnitModal_ProjektiTunnit" type="text"></div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        ProjektiTunnit
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Sulje</button>
+                        <button type="button" class="btn btn-primary" id="tunnitModalSaveButton">Tallenna</button>
+                    </div>
+                </div><
+            </div>
+        </div>
+    </div>

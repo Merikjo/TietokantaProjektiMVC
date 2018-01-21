@@ -1,0 +1,101 @@
+﻿@model IEnumerable<TietokantaProjekti2MVC.Models.SimplyTunnitData>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section scripts {
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            $(".näytäTuntiTiedotNappi").click(function () {
+                //alert("Nappia painettu!");
+                var tuntiId = $(this).data("tuntiid");
+                //var p1 = $(this).parent();
+                //alert(tuntiId);
+                $("#projekti_" + tuntiId).css("display", "table-row");
+
+                var url = "/tunti/getTunnit/" + tuntiId;
+                //alert (url);
+                $.ajax(url).done(function (data) {
+                    //alert("Palvelimelta tuli vastaus.");
+
+                    var projektiData = "";
+                    for (var i = 0; i < data.length; i++) {
+                        projektiData += (i + 1) + ": " + data[i].Etunimi + " " + data[i].Sukunimi + " " + "Projekti: " + data[i].ProjektiNimi + " " + "Tunnit: " + data[i].ProjektiTunnit + " " + "\r\n";
+                    }
+                    //alert(projektiData);
+                    $("#projektiText_" + tuntiId).html("<pre>" + projektiData + "</pre>");
+                });
+            });
+        });
+    </script>
+}
+
+<div class="jumbotron">
+        <h2>TUNNIT & PROJEKTIT PER HENKILÖ</h2>
+
+        <p><a href="/Tunti/CreateTunnit" class="w3-btn w3-large">Uusi tuntityö</a></p>
+
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TuntiID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HenkiloID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pvm)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiTunti)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjektiNimi)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a href="#"><span data-tuntiid="@Html.DisplayFor(modelItem => item.TuntiID)" class="glyphicon glyphicon-plus näytäTuntiTiedotNappi"></span></a>
+                    @Html.DisplayFor(modelItem => item.TuntiID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HenkiloID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pvm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiTunti)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjektiNimi)
+                </td>
+                <td>
+                    @Html.ActionLink("Muokkaa", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Poista", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+
+        //Alinäkymän määritykset:
+        <tr style="display: none;" id="projekti_@Html.DisplayFor(modelItem => item.TuntiID)">
+            <td>&nbsp;</td>
+            <td colspan="10" id="projektiText_@Html.DisplayFor(modelItem => item.TuntiID)"><pre>Loading...</pre></td>
+        </tr>
+}
+
+        </table>
+</div>
