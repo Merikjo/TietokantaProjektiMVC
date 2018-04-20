@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace TietokantaProjekti2MVC.Models
+namespace TietokantaProjektiMVC.Models
 {
     public class SimplyTunnitData
     {

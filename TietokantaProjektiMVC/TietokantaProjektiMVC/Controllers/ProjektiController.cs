@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TietokantaProjekti2MVC.Models;
-using Newtonsoft.Json;
 using TietokantaProjektiMVC.Models;
+using Newtonsoft.Json;
 
-namespace TietokantaProjekti2MVC.Controllers
+
+namespace TietokantaProjektiMVC.Controllers
 {
     public class ProjektiController : Controller
     {

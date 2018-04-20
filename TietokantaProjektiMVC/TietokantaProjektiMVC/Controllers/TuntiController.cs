@@ -5,11 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using TietokantaProjekti2MVC.Models;
 using Newtonsoft.Json;
 using TietokantaProjektiMVC.Models;
 
-namespace TietokantaProjekti2MVC.Controllers
+namespace TietokantaProjektiMVC.Controllers
 {
     
     public class TuntiController : Controller

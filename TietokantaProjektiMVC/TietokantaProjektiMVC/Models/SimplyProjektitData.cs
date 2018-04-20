@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using TietokantaProjektiMVC.Models;
 
-namespace TietokantaProjekti2MVC.Models
+namespace TietokantaProjektiMVC.Models
 {
     public class SimplyProjektitData
     {
