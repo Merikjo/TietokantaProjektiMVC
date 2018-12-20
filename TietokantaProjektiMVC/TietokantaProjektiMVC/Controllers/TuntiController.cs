@@ -14,7 +14,8 @@ namespace TietokantaProjektiMVC.Controllers
     public class TuntiController : Controller
     {
         private TietokantaProjektiDataEntities db = new TietokantaProjektiDataEntities();
-        // GET: Tunti:staattinen malli
+
+        #region// GET: Tunti:staattinen malli
         public ActionResult Index()
         {
             List<SimplyTunnitData> model = new List<SimplyTunnitData>();
@@ -338,7 +339,7 @@ namespace TietokantaProjektiMVC.Controllers
             base.Dispose(disposing);
         }
 
-
+        #endregion
 
         //Dynaaminen: palauttava metodi
         public JsonResult GetList()
@@ -381,6 +382,9 @@ namespace TietokantaProjektiMVC.Controllers
 
             CultureInfo fiFi = new CultureInfo("fi-FI");
 
+            //Näkymämalli eli näkymäluokka, siihen malliin, joka halutaan välittää kontrollerista näkymälle, 
+            //tässä tapauksessa Ajaxilla.
+            //rajoitetaan anonyymin tietotyypin dataa, kun käytetään taulujen välisiä kytkentöjä:
             var model = (from t in entities.Tunnit
                          where t.HenkiloID == id
                          select new
@@ -390,7 +394,7 @@ namespace TietokantaProjektiMVC.Controllers
                              HenkiloID = t.HenkiloID,
                              Pvm = t.Pvm.Value,
                              ProjektiTunnit = (decimal)t.ProjektiTunnit
-                         }).FirstOrDefault();
+                         }).FirstOrDefault(); //Haetaan vain yksi id tieto, joka voi olla myös null
 
             //Dispose käytön serialisointi = käsitellään vähemmän dataa
             string json = JsonConvert.SerializeObject(model);
@@ -401,6 +405,7 @@ namespace TietokantaProjektiMVC.Controllers
 
         public ActionResult Update(Tunnit tunn)
         {
+            //käytetään Customer tyyppistä mallioliota tiedon välittämiseen
             TietokantaProjektiDataEntities entities = new TietokantaProjektiDataEntities();
 
             CultureInfo fiFi = new CultureInfo("fi-FI");
@@ -447,8 +452,10 @@ namespace TietokantaProjektiMVC.Controllers
                     OK = true;
                 }
             }
+            //entiteettiolion vapauttaminen
             entities.Dispose();
 
+            // palautetaan 'json' muodossa
             return Json(OK, JsonRequestBehavior.AllowGet);
         }
 

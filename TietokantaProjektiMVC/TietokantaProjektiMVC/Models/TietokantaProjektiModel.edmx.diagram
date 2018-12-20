@@ -5,11 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="f06a519b809944e4b98dad12357fc294" Name="Diagram1">
-        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Henkilot" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Projektit" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Tunnit" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <AssociationConnector Association="TietokantaProjektiDataModel.FK_Tunnit_Henkilot" ManuallyRouted="false" />
-        <AssociationConnector Association="TietokantaProjektiDataModel.FK_Tunnit_Projektit" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Henkilot" Width="1.5" PointX="5" PointY="1.25" />
+        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Projektit" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="TietokantaProjektiDataModel.Tunnit" Width="1.5" PointX="3" PointY="1" />
+        <AssociationConnector Association="TietokantaProjektiDataModel.FK_Tunnit_Henkilot" />
+        <AssociationConnector Association="TietokantaProjektiDataModel.FK_Tunnit_Projektit" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

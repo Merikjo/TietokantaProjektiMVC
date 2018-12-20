@@ -25,6 +25,7 @@
                         "<td><a href='#'><span class='glyphicon glyphicon-pencil'></span></a></td>" +
                         "<td>" + projektit[index].ProjektiID + "</td>" + //[]=taulukkomääritys
                         "<td>" + projektit[index].ProjektiNimi + "</td>" +
+                        "<td>" + projektit[index].Status + "</td>" +
                         "<td><a href='#'><span class='glyphicon glyphicon-trash'></span></a></td>" +
                         "</tr>\r\n";
                 }
@@ -49,6 +50,7 @@
                         // kopioidaan tiedot ikkunaan
                         $("#projektitModal_ProjektiID").val(projektit.ProjektiID);
                         $("#projektitModal_ProjektiNimi").val(projektit.ProjektiNimi);
+                        $("#projektitModal_ProjektiStatus").val(projektit.Status);
 
                         // näytetään ikkuna
                         $("#projektitModalTitle").text("Muokkaa projekteja");
@@ -64,7 +66,7 @@
 
                     //.parent() = palataan kaksi riviä puussa ylöspäin äitielementillä dom -elementissä, eli <a href> ja <td> for -silmukassa
                     //.prev() = palataan takaisin
-                    var projektiId = $(this).parent().parent().prev().prev().text();
+                    var projektiId = $(this).parent().parent().prev().prev().prev().text();
                     var ok = confirm("Haluatko varmasti poistaa projektin " + projektiId + "?");
 
                     if (ok == true) {
@@ -91,6 +93,8 @@
                 //$("#projektitModal_ProjektiID").val("(Uusi)");
                 $("#projektitModal_ProjektiID").val("");
                 $("#projektitModal_ProjektiNimi").val("");
+                $("#projektitModal_ProjektiStatus").val("");
+
 
                 // näytetään ikkuna
                 $("#projektitModalTitle").text("Lisää uusi projekti");
@@ -102,6 +106,7 @@
                 var details = {
                     ProjektiID: $("#projektitModal_ProjektiID").val(),
                     ProjektiNimi: $("#projektitModal_ProjektiNimi").val(),
+                    Status: $("#projektitModal_ProjektiStatus").val(),
                 };
 
                 $.post("/projekti/update/", details, function (status) { //status = muuttuja
@@ -133,6 +138,7 @@
                     <th></th>
                     <th>ProjektiID</th>
                     <th>ProjektiNimi</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -152,14 +158,23 @@
                             <div class="col-md-3">ProjektiID</div>
                             <div class="col-md-6"><input class="form-control" id="projektitModal_ProjektiID" type="text" readonly></div>
                         </div>
-                        <div class="col-md-3">ProjektiNimi</div>
-                        <div class="col-md-6"><input class="form-control" id="projektitModal_ProjektiNimi" type="text"></div>
+
+                        <div class="row">
+                            <div class="col-md-3">ProjektiNimi</div>
+                            <div class="col-md-6"><input class="form-control" id="projektitModal_ProjektiNimi" type="text"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-6"><input class="form-control" id="projektitModal_Status" type="text"></div>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Sulje</button>
+                            <button type="button" class="btn btn-primary" id="projektiModalSaveButton">Tallenna</button>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Sulje</button>
-                        <button type="button" class="btn btn-primary" id="projektiModalSaveButton">Tallenna</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

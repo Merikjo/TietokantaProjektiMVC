@@ -12,6 +12,8 @@ namespace TietokantaProjektiMVC.Controllers
 {
     public class ProjektiController : Controller
     {
+        private TietokantaProjektiDataEntities db = new TietokantaProjektiDataEntities();
+
         // GET: Projekti
         public ActionResult Index()
         {
@@ -97,24 +99,33 @@ namespace TietokantaProjektiMVC.Controllers
             return RedirectToAction("Index");
         }
 
+
+        //DYNAAMINEN: palauttava metodi
         public JsonResult GetList()
         {
             TietokantaProjektiDataEntities entities = new TietokantaProjektiDataEntities();
 
+            //Näkymämalli eli näkymäluokka, siihen malliin, joka halutaan välittää kontrollerista näkymälle, 
+            //tässä tapauksessa Ajaxilla.
+            //rajoitetaan anonyymin tietotyypin dataa, kun käytetään taulujen välisiä kytkentöjä:
             var model = (from p in entities.Projektit
                          select new{
                              ProjektiID = (int)p.ProjektiID,
                              ProjektiNimi = p.ProjektiNimi,
+                             Status = p.Status,
                          }).ToList();
 
-
+            //Dispose käytön serialisointi = käsitellään vähemmän dataa
             string json = JsonConvert.SerializeObject(model);
+
+            //Tietokannan vapautus
             entities.Dispose();
 
             //Välimuistin hallinta
             Response.Expires = -1;
             Response.CacheControl = "no-cache";
 
+            //palautetaan merkkijono 'json' muodossa, kun käytetään serialisointia
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
@@ -129,7 +140,8 @@ namespace TietokantaProjektiMVC.Controllers
                          select new
                          {
                              ProjektiID = p.ProjektiID,
-                             ProjektiNimi = p.ProjektiNimi
+                             ProjektiNimi = p.ProjektiNimi,
+                             Status = p.Status
                          }).FirstOrDefault(); //Haetaan vain yksi id tieto, joka voi olla myös null
 
             //Dispose käytön serialisointi = käsitellään vähemmän dataa
@@ -159,7 +171,8 @@ namespace TietokantaProjektiMVC.Controllers
                 Projektit dbItem = new Projektit()
                 {
                     //ProjektiID = pro.ProjektiID,
-                    ProjektiNimi = pro.ProjektiNimi
+                    ProjektiNimi = pro.ProjektiNimi,
+                    Status = pro.Status
                 };
 
                 // Tallennus SQL tietokantaan
@@ -179,6 +192,7 @@ namespace TietokantaProjektiMVC.Controllers
                 {
                     //dbItem.ProjektiID = pro.ProjektiID;
                     dbItem.ProjektiNimi = pro.ProjektiNimi;
+                    dbItem.Status = pro.Status;
 
                     // tallennetaan tiedot SQL tietokantaan
                     entities.SaveChanges();

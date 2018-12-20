@@ -103,9 +103,9 @@
                     var henkiloId = $(this).parent().parent().prev().prev().prev().prev().prev().text(); //ks. http://api.jquery.com/prev/
                     var ok = confirm("Haluatko varmasti poistaa henkilötiedot " + henkiloId + "?");
 
-                    if (ok == true) {
+                    if (ok === true) {
                         $.getJSON("/henkilo/delete/" + henkiloId, null, function (status) { //henkiloId = parametri, status = olio
-                            if (status == true) {
+                            if (status === true) {
                                 alert("Henkilötiedot on poistettu!");
                                 päivitäHenkilölista();
                             }
@@ -237,6 +237,7 @@
                             <div class="col-md-3">Sukunimi</div>
                             <div class="col-md-6"><input class="form-control" id="henkilotModal_Sukunimi" type="text"></div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">Osoite</div>
                             <div class="col-md-6"><input class="form-control" id="henkilotModal_Osoite" type="text"></div>

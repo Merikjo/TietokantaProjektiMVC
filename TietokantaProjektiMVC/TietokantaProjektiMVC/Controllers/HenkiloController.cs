@@ -14,7 +14,9 @@ namespace TietokantaProjektiMVC.Controllers
 {
     public class HenkiloController : Controller
     {
-        // GET: Henkilo
+        private TietokantaProjektiDataEntities db = new TietokantaProjektiDataEntities();
+
+        #region // GET: Henkilo
         public ActionResult Index()
         {
             List<Henkilot> model = new List<Henkilot>();
@@ -124,13 +126,18 @@ namespace TietokantaProjektiMVC.Controllers
                 return HttpNotFound();
             }
             return View(henkilo);*/
+        #endregion
 
 
-        //Dynaaminen: palauttava metodi
+        //DYNAAMINEN: palauttava metodi
         public JsonResult GetList()
         {
             TietokantaProjektiDataEntities entities = new TietokantaProjektiDataEntities();
 
+
+            //Näkymämalli eli näkymäluokka, siihen malliin, joka halutaan välittää kontrollerista näkymälle, 
+            //tässä tapauksessa Ajaxilla.
+            //rajoitetaan anonyymin tietotyypin dataa, kun käytetään taulujen välisiä kytkentöjä:
             var model = (from h in entities.Henkilot
                          select new{
                              HenkiloID = h.HenkiloID,
@@ -140,28 +147,65 @@ namespace TietokantaProjektiMVC.Controllers
                              Esimies = (int)h.Esimies
                          }).ToList();
 
-
+            //Dispose käytön serialisointi = käsitellään vähemmän dataa
             string json = JsonConvert.SerializeObject(model);
+
+            //Tietokannan vapautus
             entities.Dispose();
 
             //Välimuistin hallinta
             Response.Expires = -1;
             Response.CacheControl = "no-cache";
 
+
+            //palautetaan merkkijono 'json' muodossa, kun käytetään serialisointia
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetSingleHenkilo(string id)
+      
+
+        #region //1.vaihtoehto malli:
+        //public JsonResult GetSingleHenkilo(string id)
+        //{
+        //    TietokantaProjektiDataEntities entities = new TietokantaProjektiDataEntities();
+
+        //    int henkiloid = int.Parse(id);
+
+        //    //Näkymämalli eli näkymäluokka, siihen malliin, joka halutaan välittää kontrollerista näkymälle, 
+        //    //tässä tapauksessa Ajaxilla.
+        //    //rajoitetaan anonyymin tietotyypin dataa, kun käytetään taulujen välisiä kytkentöjä:
+        //    var model = (from h in entities.Henkilot join t in entities.Tunnit on h.HenkiloID equals t.HenkiloID
+        //                 where h.HenkiloID == henkiloid //haetaan vain yksi tieto where lausekkeella
+        //                 select new
+        //                 {
+        //                     HenkiloID = h.HenkiloID,
+        //                     Etunimi = h.Etunimi,
+        //                     Sukunimi = h.Sukunimi,
+        //                     Osoite = h.Osoite,
+        //                     Esimies = (int)h.Esimies
+        //                 }).FirstOrDefault(); //Haetaan vain yksi id tieto, joka voi olla myös null
+
+        //    //Dispose käytön serialisointi = käsitellään vähemmän dataa
+        //    string json = JsonConvert.SerializeObject(model);
+        //    //Tietokannan vapautus
+        //    entities.Dispose();
+
+        //    //palautetaan merkkijono 'json' muodossa, kun käytetään serialisointia
+        //    return Json(json, JsonRequestBehavior.AllowGet);
+        //}
+        #endregion
+
+        #region//2.vaihtoehto malli:
+        public JsonResult GetSingleHenkilo(int id)
         {
             TietokantaProjektiDataEntities entities = new TietokantaProjektiDataEntities();
-
-            int henkiloid = int.Parse(id);
 
             //Näkymämalli eli näkymäluokka, siihen malliin, joka halutaan välittää kontrollerista näkymälle, 
             //tässä tapauksessa Ajaxilla.
             //rajoitetaan anonyymin tietotyypin dataa, kun käytetään taulujen välisiä kytkentöjä:
-            var model = (from h in entities.Henkilot join t in entities.Tunnit on h.HenkiloID equals t.HenkiloID
-                         where h.HenkiloID == henkiloid //haetaan vain yksi tieto where lausekkeella
+            var model = (from h in entities.Henkilot
+                         join t in entities.Tunnit on h.HenkiloID equals t.HenkiloID
+                         where h.HenkiloID == id //haetaan vain yksi tieto where lausekkeella
                          select new
                          {
                              HenkiloID = h.HenkiloID,
@@ -179,6 +223,7 @@ namespace TietokantaProjektiMVC.Controllers
             //palautetaan merkkijono 'json' muodossa, kun käytetään serialisointia
             return Json(json, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
         public ActionResult Update(Henkilot henk)
         //käytetään Customer tyyppistä mallioliota tiedon välittämiseen
@@ -215,6 +260,7 @@ namespace TietokantaProjektiMVC.Controllers
                 //haetaan id:n perusteella rivi SQL tietokannasta
                 Henkilot dbItem = (from h in entities.Henkilot
                                    where h.HenkiloID == henk.HenkiloID
+                                   //where h.HenkiloID == id
                                    select h).FirstOrDefault(); //haetaan vain yhden henkilön tiedot
 
                 //jos tiedot löytyvät eli ei ole null
@@ -225,7 +271,6 @@ namespace TietokantaProjektiMVC.Controllers
                     dbItem.Sukunimi = henk.Sukunimi;
                     dbItem.Osoite = henk.Osoite;
                     dbItem.Esimies = henk.Esimies;
-
 
                     // tallennus SQL tietokantaan
                     entities.SaveChanges();
